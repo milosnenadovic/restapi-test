@@ -103,10 +103,10 @@
         ><br />
         <label for="kategorija_odabir_put">Odaberite novu kategoriju:</label>
         <select name="kategorija_odabir_put" id="kategorija_odabir_put">
-          <option value="k1">1</option>
-          <option value="k2">2</option>
-          <option value="k3">3</option>
-          <option value="k4">4</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
         </select>
         <div id="greska"></div>
       </div>
@@ -200,7 +200,15 @@
       switch ($("input[name=http_zahtev]:checked")[0].id) {
         case "get":
           if (tabela == "radio_novosti") {
-            $.getJSON("http://localhost:8080/restapi-test/novosti", function (
+            $.getJSON("http://localhost:80/rest/api/novosti", function (data) {
+              document.getElementById("get_odgovor").innerHTML = JSON.stringify(
+                data,
+                null,
+                2
+              );
+            });
+          } else {
+            $.getJSON("http://localhost:80/rest/api/kategorije", function (
               data
             ) {
               document.getElementById("get_odgovor").innerHTML = JSON.stringify(
@@ -209,15 +217,6 @@
                 2
               );
             });
-          } else {
-            $.getJSON(
-              "http://localhost:8080/restapi-test/kategorije",
-              function (data) {
-                document.getElementById(
-                  "get_odgovor"
-                ).innerHTML = JSON.stringify(data, null, 2);
-              }
-            );
           }
           break;
         case "post":
@@ -229,7 +228,7 @@
             };
             console.log(values);
             $.post(
-              "http://localhost:8080/restapi-test/novosti",
+              "http://localhost:80/rest/api/novosti",
               JSON.stringify(values),
               function (data) {
                 alert("Odgovor od servera> " + data["poruka"]);
@@ -241,12 +240,66 @@
             };
             console.log(values);
             $.post(
-              "http://localhost:8080/restapi-test/kategorije",
+              "http://localhost:80/rest/api/kategorije",
               JSON.stringify(values),
               function (data) {
                 alert("Odgovor od servera> " + data["poruka"]);
               }
             );
+          }
+          break;
+        case "put":
+          if (tabela == "radio_novosti") {
+            var values = {
+              naslov: $("input[name=naslov_novosti_put]").val(),
+              tekst: $("#tekst_novosti_put").val(),
+              kategorija_id: parseInt($("#kategorija_odabir_put").val()),
+            };
+            console.log(values);
+            $.ajax({
+              url: "http://localhost:80/rest/api/novosti/3",
+              type: "PUT",
+              data: JSON.stringify(values),
+              success: function (data) {
+                alert("Odgovor od servera> " + data["poruka"]);
+              },
+            });
+          } else {
+            var values = {
+              kategorija: $("input[name=kategorija_naziv_put]").val(),
+            };
+            console.log(values);
+            $.ajax({
+              url: "http://localhost:80/rest/api/kategorije/4",
+              type: "PUT",
+              data: JSON.stringify(values),
+              success: function (data) {
+                alert("Odgovor od servera> " + data["poruka"]);
+              },
+            });
+          }
+          break;
+        case "delete":
+          if (tabela == "radio_novosti") {
+            $.ajax({
+              url: `http://localhost:80/rest/api/novosti/${parseInt(
+                $("#brisanje").val()
+              )}`,
+              type: "DELETE",
+              success: function (data) {
+                alert("Odgovor od servera> " + data["poruka"]);
+              },
+            });
+          } else {
+            $.ajax({
+              url: `http://localhost:80/rest/api/kategorije/${parseInt(
+                $("#brisanje").val()
+              )}`,
+              type: "DELETE",
+              success: function (data) {
+                alert("Odgovor od servera> " + data["poruka"]);
+              },
+            });
           }
           break;
         default:
