@@ -1,121 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Testiranje REST</title>
-    <script
-      src="https://code.jquery.com/jquery-3.5.1.js"
-      integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
-      crossorigin="anonymous"
-    ></script>
-  </head>
-  <body>
-    <h1>Forma za manipulaciju sa API</h1>
-    <form action="">
-      <div id="odabir_tabele">
-        <input
-          type="radio"
-          name="odabir_tabele"
-          id="radio_kategorija"
-          value="kategorija"
-        />
-        <label for="radio_kategorija">Kategorija</label>
-        <input
-          type="radio"
-          name="odabir_tabele"
-          id="radio_novosti"
-          value="novosti"
-        />
-        <label for="radio_novosti">Novosti</label>
-      </div>
-      <div id="http_zahtev">
-        <input type="radio" name="http_zahtev" id="get" value="get" />
-        <label for="get">GET</label>
-        <input type="radio" name="http_zahtev" id="post" value="post" />
-        <label for="post">POST</label>
-        <input type="radio" name="http_zahtev" id="put" value="put" />
-        <label for="put">PUT</label>
-        <input type="radio" name="http_zahtev" id="delete" value="delete" />
-        <label for="delete">DELETE</label>
-      </div>
-      <pre id="get_odgovor"></pre>
-      <div id="novosti_post">
-        <input
-          type="text"
-          name="naslov_novosti"
-          placeholder="Unesite naslov novosti"
-        />
-        <br />
-        <textarea
-          name="tekst_novosti"
-          id="tekst_novosti"
-          cols="30"
-          rows="10"
-          placeholder="Unesite tekst novosti"
-        ></textarea>
-        <br />
-        <label for="kategorija_odabir">Kategorija:</label>
-        <select name="kategorija_odabir" id="kategorija_odabir">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-        </select>
-      </div>
-      <div id="kategorije_post">
-        <input
-          type="text"
-          name="kategorija_naziv"
-          id="kategorija_naziv"
-          placeholder="Unesite naziv nove kategorije"
-        />
-      </div>
-      <div id="brisanje_reda">
-        <input
-          type="text"
-          name="brisanje"
-          id="brisanje"
-          placeholder="Unesite id koji zelite da orbisete"
-        />
-      </div>
-      <div id="kategorije_put">
-        <input
-          type="text"
-          name="kategorija_naziv_put"
-          id="kategorija_naziv_put"
-          placeholder="Unesite novi naziv"
-        />
-      </div>
-      <div id="novosti_put">
-        <input
-          type="text"
-          name="naslov_novosti_put"
-          placeholder="Unesite novi naslov novosti"
-        /><br />
-        <textarea
-          name="tekst_novosti_put"
-          id="tekst_novosti_put"
-          cols="30"
-          rows="10"
-          placeholder="Unesite tekst nove novosti"
-        ></textarea
-        ><br />
-        <label for="kategorija_odabir_put">Odaberite novu kategoriju:</label>
-        <select name="kategorija_odabir_put" id="kategorija_odabir_put">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-        </select>
-        <div id="greska"></div>
-      </div>
-      <div id="submit">
-        <button type="button">Posalji zahtev</button>
-      </div>
-    </form>
-  </body>
-</html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Testiranje REST</title>
+  <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+</head>
+<?php
+include "obrada.php";
+?>
+
+<body>
+  <h1>Forma za manipulaciju sa API</h1>
+  <form action="obrada.php" method="POST">
+    <div id="odabir_tabele">
+      <input type="radio" name="odabir_tabele" id="radio_kategorija" value="kategorija" />
+      <label for="radio_kategorija">Kategorija</label>
+      <input type="radio" name="odabir_tabele" id="radio_novosti" value="novosti" />
+      <label for="radio_novosti">Novosti</label>
+    </div>
+    <div id="http_zahtev">
+      <input type="radio" name="http_zahtev" id="get" value="get" />
+      <label for="get">GET</label>
+      <input type="radio" name="http_zahtev" id="post" value="post" />
+      <label for="post">POST</label>
+      <input type="radio" name="http_zahtev" id="put" value="put" />
+      <label for="put">PUT</label>
+      <input type="radio" name="http_zahtev" id="delete" value="delete" />
+      <label for="delete">DELETE</label>
+    </div>
+    <pre id="get_odgovor"></pre>
+    <div id="novosti_post">
+      <input type="text" name="naslov_novosti" placeholder="Unesite naslov novosti" />
+      <br />
+      <textarea name="tekst_novosti" id="tekst_novosti" cols="30" rows="10" placeholder="Unesite tekst novosti"></textarea>
+      <br />
+      <label for="kategorija_odabir">Kategorija:</label>
+      <select name="kategorija_odabir" id="kategorija_odabir">
+        <?php
+        $mydb->select("kategorije", "*", null, null, null);
+        while ($red = $mydb->getResult()->fetch_object()) :
+        ?>
+          <option value="<?php echo $red->id ?>"><?php echo $red->kategorija ?></option>
+        <?php endwhile; ?>
+      </select>
+    </div>
+    <div id="kategorije_post">
+      <input type="text" name="kategorija_naziv" id="kategorija_naziv" placeholder="Unesite naziv nove kategorije" />
+    </div>
+    <div id="brisanje_reda">
+      <input type="text" name="brisanje" id="brisanje" placeholder="Unesite id koji zelite da orbisete" />
+    </div>
+    <div id="kategorije_put">
+      <input type="text" name="kategorija_id" id="kategorija_id" placeholder="Unesite ID kategorije">
+      <br>
+      <input type="text" name="kategorija_naziv_put" id="kategorija_naziv_put" placeholder="Unesite novi naziv" />
+    </div>
+    <div id="novosti_put">
+      <input type="text" name="naslov_novosti_put" placeholder="Unesite novi naslov novosti" /><br />
+      <textarea name="tekst_novosti_put" id="tekst_novosti_put" cols="30" rows="10" placeholder="Unesite tekst nove novosti"></textarea><br />
+      <label for="kategorija_odabir_put">Odaberite novu kategoriju:</label>
+      <select name="kategorija_odabir_put" id="kategorija_odabir_put">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+      <div id="greska"></div>
+    </div>
+    <div id="submit">
+      <input type="submit" name="posalji" id="posalji" value="Posalji zahtev" />
+    </div>
+  </form>
+</body>
+
 
 <script>
   var nizBlokova = [
@@ -126,6 +85,7 @@
     "kategorije_put",
     "novosti_put",
   ];
+
   function skloniBlokove() {
     for (const blok of nizBlokova) {
       document.getElementById(blok).style.display = "none";
@@ -135,6 +95,7 @@
   $("input[name=http_zahtev]").on("click", prikaziBlok);
   $("input[name=odabir_tabele]").on("click", resetHTTP);
   $("button").on("click", posaljiZahtev);
+
   function prikaziBlok() {
     switch ($("input[name=http_zahtev]:checked")[0].id) {
       case "get":
@@ -187,10 +148,12 @@
         break;
     }
   }
+
   function resetHTTP() {
     skloniBlokove();
     $("input[name=http_zahtev]").prop("checked", false);
   }
+
   function posaljiZahtev() {
     if (
       $("input[name=odabir_tabele]:checked").length != 0 &&
@@ -200,7 +163,7 @@
       switch ($("input[name=http_zahtev]:checked")[0].id) {
         case "get":
           if (tabela == "radio_novosti") {
-            $.getJSON("http://localhost:80/rest/api/novosti", function (data) {
+            $.getJSON("http://localhost:80/rest/api/novosti", function(data) {
               document.getElementById("get_odgovor").innerHTML = JSON.stringify(
                 data,
                 null,
@@ -208,7 +171,7 @@
               );
             });
           } else {
-            $.getJSON("http://localhost:80/rest/api/kategorije", function (
+            $.getJSON("http://localhost:80/rest/api/kategorije", function(
               data
             ) {
               document.getElementById("get_odgovor").innerHTML = JSON.stringify(
@@ -230,7 +193,7 @@
             $.post(
               "http://localhost:80/rest/api/novosti",
               JSON.stringify(values),
-              function (data) {
+              function(data) {
                 alert("Odgovor od servera> " + data["poruka"]);
               }
             );
@@ -242,7 +205,7 @@
             $.post(
               "http://localhost:80/rest/api/kategorije",
               JSON.stringify(values),
-              function (data) {
+              function(data) {
                 alert("Odgovor od servera> " + data["poruka"]);
               }
             );
@@ -260,7 +223,7 @@
               url: "http://localhost:80/rest/api/novosti/3",
               type: "PUT",
               data: JSON.stringify(values),
-              success: function (data) {
+              success: function(data) {
                 alert("Odgovor od servera> " + data["poruka"]);
               },
             });
@@ -273,7 +236,7 @@
               url: "http://localhost:80/rest/api/kategorije/4",
               type: "PUT",
               data: JSON.stringify(values),
-              success: function (data) {
+              success: function(data) {
                 alert("Odgovor od servera> " + data["poruka"]);
               },
             });
@@ -284,9 +247,9 @@
             $.ajax({
               url: `http://localhost:80/rest/api/novosti/${parseInt(
                 $("#brisanje").val()
-              )}`,
+                )}`,
               type: "DELETE",
-              success: function (data) {
+              success: function(data) {
                 alert("Odgovor od servera> " + data["poruka"]);
               },
             });
@@ -294,9 +257,9 @@
             $.ajax({
               url: `http://localhost:80/rest/api/kategorije/${parseInt(
                 $("#brisanje").val()
-              )}`,
+                )}`,
               type: "DELETE",
-              success: function (data) {
+              success: function(data) {
                 alert("Odgovor od servera> " + data["poruka"]);
               },
             });
@@ -309,3 +272,5 @@
     }
   }
 </script>
+
+</html>
